@@ -8,7 +8,7 @@ COPY ConversaoPeso.Web/. ./ConversaoPeso.Web/
 WORKDIR /src/ConversaoPeso.Web 
 RUN dotnet publish -c release -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
+FROM mcr.microsoft.com/dotnet/aspnet
 WORKDIR /app
 COPY --from=publish /app/publish ./
 EXPOSE 8080
