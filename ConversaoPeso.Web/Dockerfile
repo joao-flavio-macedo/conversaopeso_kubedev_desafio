@@ -1,19 +1,15 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 as builder
-WORKDIR /app
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /source
+COPY .sln .
+COPY ConversaoPeso.Web/.csproj ./ConversaoPeso.Web/
+RUN dotnet restore
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 as build
-WORKDIR /src
-COPY ["ConversaoPeso.Web.csproj", "backend/"]
-RUN dotnet restore "./backend/ConversaoPeso.Web.csproj"
-COPY . .
-WORKDIR "/src/."
-RUN dotnet build "ConversaoPeso.Web.csproj" -c Release -o /app/build
+COPY ConversaoPeso.Web/. ./ConversaoPeso.Web/
+WORKDIR /source/ConversaoPeso.Web
+RUN dotnet publish -c release -o /cod --no-restore
 
-FROM build as publish
-RUN dotnet publish "ConversaoPeso.Web.csproj" -c Release -o /app/publish
-
-FROM mcr.microsoft.com/dotnet/sdk:5.0
-WORKDIR /app
-COPY --from=publish /app/publish .
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /cod
+COPY --from=build /cod ./
 EXPOSE 5000
-ENTRYPOINT ["dotnet","ConversaoPeso.Web.dll"]
+ENTRYPOINT ["dotnet", "ConversaoPeso.Web.dll"]
