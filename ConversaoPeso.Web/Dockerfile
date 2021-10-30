@@ -15,5 +15,5 @@ RUN dotnet publish "ConversaoPeso.Web.csproj" -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/sdk:5.0
 WORKDIR /app
 COPY --from=publish /app/publish .
-EXPOSE 8080
+EXPOSE 5000
 ENTRYPOINT ["dotnet","ConversaoPeso.Web.dll"]
